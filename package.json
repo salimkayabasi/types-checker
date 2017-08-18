@@ -31,10 +31,16 @@
     "build": "babel src/ -d dist/",
     "prepublish": "yarn run build"
   },
-  "dependencies": {},
+  "dependencies": {
+    "async": "^2.5.0",
+    "commander": "^2.11.0",
+    "lodash": "^4.17.4",
+    "log-with": "^1.2.1"
+  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-eslint": "^7.2.3",
+    "babel-plugin-dynamic-import-node": "^1.0.2",
     "babel-preset-env": "^1.6.0",
     "babel-preset-stage-2": "^6.24.1",
     "eslint": "^4.4.1",
