@@ -1,0 +1,25 @@
+extends: "airbnb"
+
+parser: "babel-eslint"
+
+env:
+  browser: true
+  node: true
+  es6: true
+  jest: true
+
+parserOptions:
+ ecmaVersion: 6
+ sourceType: "module"
+ ecmaFeatures:
+   classes: true,
+   jsx: true
+
+plugins:
+  - import
+  - react
+  - jsx-a11y
+
+rules:
+  no-console: error
+  jsx-a11y/href-no-hash: off

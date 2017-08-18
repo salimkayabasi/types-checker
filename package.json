@@ -1,11 +1,71 @@
 {
   "name": "types-checker",
   "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "Checker for Typescript definitions for modules",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/salimkayabasi/types-checker.git"
   },
-  "author": "",
-  "license": "ISC"
+  "bugs": {
+    "url": "https://github.com/salimkayabasi/types-checker/issues"
+  },
+  "homepage": "https://github.com/salimkayabasi/types-checker#readme",
+  "author": "Salim KAYABAŞI <salim.kayabasi@gmail.com>",
+  "license": "MIT",
+  "bin": {
+    "types-checker": "./bin/types-checker.js",
+    "ts-checker": "./bin/types-checker.js",
+    "tscheck": "./bin/types-checker.js"
+  },
+  "main": "dist/types-checker.js",
+  "scripts": {
+    "major": "npm version major -m \"New major version %s\"",
+    "minor": "npm version minor -m \"New minor version %s\"",
+    "patch": "npm version patch -m \"New patch version %s\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "pretest": "yarn run lint",
+    "test": "jest --colors",
+    "clean": "rm -rf dist/ build/ coverage/",
+    "prebuild": "yarn run lint && yarn run clean && yarn run test",
+    "build": "babel src/ -d dist/",
+    "prepublish": "yarn run build"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^7.2.3",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "eslint": "^4.4.1",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "6.0.2",
+    "eslint-plugin-react": "^7.2.1",
+    "jest": "^20.0.4"
+  },
+  "jest": {
+    "testMatch": [
+      "**/(__tests__|tests|test)/**/*.test.js?(x)"
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!**/coverage/**",
+      "!**/build/**",
+      "!**/dist/**",
+      "!**/bin/**",
+      "!**/config/**",
+      "!**/test/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 0,
+        "functions": 0,
+        "lines": 0,
+        "statements": 0
+      }
+    }
+  }
 }

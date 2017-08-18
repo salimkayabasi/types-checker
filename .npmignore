@@ -1,0 +1,12 @@
+src/
+test/
+coverage/
+build/
+readme.md
+LICENSE
+.babelrc
+.eslintignore
+.eslintrc.yml
+.travis.yml
+.yarnclean
+yarn.lock
