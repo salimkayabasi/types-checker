@@ -12,7 +12,13 @@ export default class TypesChecker {
     if (log) {
       logger.level = 'debug';
     }
-    const pkg = await import(`${cwd}/package.json`);
+    let pkg;
+    try {
+      pkg = await import(`${cwd}/package.json`);
+    } catch (e) {
+      logger.error(e.message);
+      process.exit(1);
+    }
     const dependencies = _.get(pkg, 'dependencies', {});
     const devDependencies = _.get(pkg, 'devDependencies', {});
     logger.debug('dependencies', dependencies);
@@ -64,9 +70,10 @@ export default class TypesChecker {
       return Promise.resolve();
     }
     const cmd = `${useNpm ? 'npm install --save-dev' : 'yarn add --dev'} ${modules}`;
-    logger.info('cmd', `'${cmd}'`);
+    logger.info('Running', `'${cmd}'`);
     return new Promise((done, fail) => {
-      exec(cmd, { cwd }, (err) => {
+      exec(cmd, { cwd }, (err, stdout, stderr) => {
+        logger.debug(`\n${stdout}\n${stderr}`);
         if (err) {
           fail(err);
         } else {
