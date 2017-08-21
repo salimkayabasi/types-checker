@@ -1,6 +1,6 @@
 {
   "name": "types-checker",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Checker for Typescript definitions for modules",
   "repository": {
     "type": "git",
