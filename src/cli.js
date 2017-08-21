@@ -10,6 +10,7 @@ program
   .version(pkg.version)
   .option('-l, --log', 'Debug output. See all logs')
   .option('-a, --all', 'Add all possible type definitions')
+  .option('-p, --path [value]', 'Path for package.json file')
   .option('-i, --interactive', 'Interactive mode')
   .option('-N, --use-npm', 'Use NPM instead of Yarn')
   .parse(process.argv);
@@ -19,7 +20,7 @@ const options = {
   all: program.all || false,
   interactive: program.interactive || false,
   useNpm: program.useNpm || false,
-  cwd: program.cwd || process.cwd(),
+  cwd: program.path || process.cwd(),
 };
 
 if (options.log) {
@@ -30,8 +31,8 @@ logger.debug('All options', options);
 
 TypesChecker.check(options)
   .then(async (state) => {
-    logger.debug('state', state);
     if (_.isEmpty(state)) {
+      logger.info('We couldn\'t find any dependencies to install');
       return Promise.resolve();
     }
     let filtered = state;
@@ -42,7 +43,7 @@ TypesChecker.check(options)
     return TypesChecker.update(options, filtered);
   })
   .then(() => {
-    logger.info('done');
+    logger.info('Done');
     process.exit(0);
   })
   .catch((e) => {
