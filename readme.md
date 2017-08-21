@@ -1,5 +1,12 @@
 # types-checker
 
+[![Dependency Status](https://img.shields.io/david/salimkayabasi/types-checker.svg)](https://david-dm.org/salimkayabasi/types-checker)
+[![npm](https://img.shields.io/npm/dm/types-checker.svg?maxAge=2592000)]()
+[![npm version](https://badge.fury.io/js/types-checker.svg)](https://badge.fury.io/js/types-checker)
+[![Build Status](https://travis-ci.org/salimkayabasi/types-checker.svg?)](https://travis-ci.org/salimkayabasi/types-checker)
+
+> Check missing type definition modules for your Typescript project
+
 You may forget to add `type definition`s for your projects. It's hard to add all dependencies at 
 the same time. You need to be sure that how many modules have definition module like `@types/...`.
 
