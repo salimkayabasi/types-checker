@@ -1,14 +1,16 @@
+import chalk from 'chalk';
 import program from 'commander';
 import _ from 'lodash';
-import logWith from 'log-with';
+import log4js from 'log4js';
 import pkg from '../package.json';
 import TypesChecker from './types-checker';
 
-const logger = logWith(module);
+const logger = log4js.getLogger('types-checker');
 
 program
   .version(pkg.version)
-  .option('-l, --log', 'Debug output. See all logs')
+  .option('-l, --logger', 'Debug output. See all logs')
+  .option('-c, --no-color', 'Disable colored output')
   .option('-a, --all', 'Add all possible type definitions')
   .option('-p, --path [value]', 'Path for package.json file')
   .option('-i, --interactive', 'Interactive mode')
@@ -16,34 +18,66 @@ program
   .parse(process.argv);
 
 const options = {
-  log: program.log || (process.env.NODE_DEBUG === 'true') || false,
+  log: program.logger || false,
+  noColor: program.noColor || false,
   all: program.all || false,
   interactive: program.interactive || false,
   useNpm: program.useNpm || false,
   cwd: program.path || process.cwd(),
 };
 
-if (options.log) {
-  logger.level = 'debug';
-}
+chalk.enabled = !options.noColor;
+
+log4js.configure({
+  appenders: {
+    out: {
+      type: 'stdout',
+      layout: {
+        type: 'messagePassThrough',
+      },
+    },
+  },
+  categories: {
+    default: {
+      appenders: ['out'],
+      level: options.log ? 'debug' : 'info',
+    },
+  },
+});
 
 logger.debug('All options', options);
 
+options.logger = logger;
+options.chalk = chalk;
+
+logger.info(`${chalk.green('Starting')} ${pkg.name}@${pkg.version}`);
+const startedAt = process.hrtime();
 TypesChecker.check(options)
-  .then(async (state) => {
-    if (_.isEmpty(state)) {
+  .then(async (modules) => {
+    if (_.isEmpty(modules)) {
       logger.info('We couldn\'t find any dependencies to install');
       return Promise.resolve();
     }
-    let filtered = state;
+    let filtered = modules;
+    logger.info('These modules are missing', _.map(filtered,
+      packageName => chalk.yellowBright(packageName))
+      .join(' '));
     if (options.interactive) {
       filtered = await TypesChecker.interactive(options, filtered);
       logger.debug('filtered state', filtered);
     }
-    return TypesChecker.update(options, filtered);
+    if (options.all) {
+      return TypesChecker.update(options, filtered);
+    }
+    const param = chalk.yellow('--all');
+    logger.info(`Please run with '${param}' param if you want to install these dependencies`);
+    return Promise.resolve();
   })
   .then(() => {
-    logger.info('Done');
+    const finishedAt = process.hrtime(startedAt);
+    const nanoseconds = (finishedAt[0] * 1e9) + finishedAt[1];
+    const seconds = (nanoseconds / 1e9).toFixed(2);
+    logger.info(chalk.green(`Done in ${seconds}s`));
     process.exit(0);
   })
   .catch((e) => {
