@@ -55,19 +55,16 @@ const startedAt = process.hrtime();
 TypesChecker.check(options)
   .then(async (modules) => {
     if (_.isEmpty(modules)) {
-      logger.info('We couldn\'t find any dependencies to install');
+      logger.info(chalk.red('We couldn\'t find any dependencies to install'));
       return Promise.resolve();
     }
-    let filtered = modules;
-    logger.info('These modules are missing', _.map(filtered,
+    logger.info('These modules are missing', _.map(modules,
       packageName => chalk.yellowBright(packageName))
       .join(' '));
     if (options.interactive) {
-      filtered = await TypesChecker.interactive(options, filtered);
-      logger.debug('filtered state', filtered);
-    }
-    if (options.all) {
-      return TypesChecker.update(options, filtered);
+      return TypesChecker.interactive(options, modules);
+    } else if (options.all) {
+      return TypesChecker.update(options, modules);
     }
     const param = chalk.yellow('--all');
     logger.info(`Please run with '${param}' param if you want to install these dependencies`);

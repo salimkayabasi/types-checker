@@ -1,5 +1,6 @@
 import reduce from 'async/reduce';
 import { exec } from 'child_process';
+import inquirer from 'inquirer';
 import _ from 'lodash';
 import ora from 'ora';
 
@@ -51,11 +52,53 @@ export default class TypesChecker {
     });
   }
 
-  static async interactive(options, state) {
-    return {
-      options,
-      state,
-    };
+  static async interactive(options, packageNames) {
+    const { logger, chalk } = options;
+    const result = await inquirer.prompt(
+      [
+        {
+          name: 'packages',
+          message: 'Choose which packages to install.',
+          type: 'checkbox',
+          default: packageNames,
+          choices: packageNames,
+          pageSize: process.stdout.rows - 2,
+        },
+        {
+          name: 'install',
+          message: 'Would you like to install selected dependencies?',
+          type: 'confirm',
+          when(answers) {
+            return answers.packages.length;
+          },
+          default(answers) {
+            return answers.packages.length;
+          },
+        },
+        {
+          name: 'manager',
+          message: 'Which package manager would you like to use?',
+          type: 'list',
+          choices: ['yarn', 'npm'],
+          when(answers) {
+            return answers.install;
+          },
+          pageSize: process.stdout.rows - 2,
+        },
+      ]);
+    const { manager, packages, install } = result;
+    logger.debug('interactive', result);
+    if (_.isEmpty(packages)) {
+      logger.info(chalk.red('You haven\'t selected any packages to install'));
+      return Promise.resolve();
+    }
+    const opts = options;
+    opts.useNpm = manager === 'npm';
+    opts.all = install;
+    if (opts.all) {
+      return TypesChecker.update(opts, packages);
+    }
+    return Promise.resolve();
   }
 
   static async update(options, packageNames) {

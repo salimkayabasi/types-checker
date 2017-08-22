@@ -54,6 +54,9 @@ Done in 2.00s
 
 ```
 
+### Interactive Mode
+
+[![asciicast](https://asciinema.org/a/134438.png)](https://asciinema.org/a/134438)
 
 ### Installing
 ```bash
