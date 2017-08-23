@@ -8,6 +8,12 @@ import ora from 'ora';
 const typesPrefix = '@types/';
 
 export default class TypesChecker {
+  static getTypedModuleNames(packages) {
+    const ifArray = value => (_.startsWith(typesPrefix) ? value : `${typesPrefix}${value}`);
+    const ifString = (value, key) => ifArray(key);
+    return _.map(packages, _.isArray(packages) ? ifArray : ifString);
+  }
+
   static async check(options) {
     const { cwd, logger, chalk } = options;
     const pkg = await new Promise(
@@ -33,11 +39,15 @@ export default class TypesChecker {
     const dependencies = _.get(pkg, 'dependencies', {});
     dependencies.node = 'node';
     const devDependencies = _.get(pkg, 'devDependencies', {});
+    const tscheck = _.get(pkg, 'tscheck', {});
     logger.debug('dependencies', dependencies);
     logger.debug('devDependencies', devDependencies);
+    logger.debug('tscheck', tscheck);
     const modules = _.difference(
-      _.map(dependencies, (value, key) => `${typesPrefix}${key}`),
-      _.keys(devDependencies));
+      TypesChecker.getTypedModuleNames(dependencies),
+      _.keys(devDependencies),
+      TypesChecker.getTypedModuleNames(_.get(tscheck, 'exclude')),
+    );
     return TypesChecker.checkNpm(modules);
   }
 
