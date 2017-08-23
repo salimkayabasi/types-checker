@@ -1,5 +1,6 @@
 import reduce from 'async/reduce';
 import { exec } from 'child_process';
+import fs from 'fs';
 import inquirer from 'inquirer';
 import _ from 'lodash';
 import ora from 'ora';
@@ -8,23 +9,35 @@ const typesPrefix = '@types/';
 
 export default class TypesChecker {
   static async check(options) {
-    const { cwd, logger } = options;
-    let pkg;
-    try {
-      pkg = await import(`${cwd}/package.json`);
-    } catch (e) {
-      logger.error(e.message);
-      process.exit(1);
-    }
+    const { cwd, logger, chalk } = options;
+    const pkg = await new Promise(
+      (done, fail) => {
+        fs.readFile(`${cwd}/package.json`, {},
+          (err, data) => {
+            if (err) {
+              fail(err);
+            } else {
+              try {
+                const result = JSON.parse(data.toString());
+                done(result);
+              } catch (e) {
+                fail(e);
+              }
+            }
+          });
+      })
+      .catch((e) => {
+        logger.error(chalk.red(`${e.message}\n${e.stack}`));
+        process.exit(1);
+      });
     const dependencies = _.get(pkg, 'dependencies', {});
     dependencies.node = 'node';
     const devDependencies = _.get(pkg, 'devDependencies', {});
     logger.debug('dependencies', dependencies);
     logger.debug('devDependencies', devDependencies);
-    const modules = _.chain(dependencies)
-      .map((value, key) => `${typesPrefix}${key}`)
-      .difference(_.keys(devDependencies))
-      .value();
+    const modules = _.difference(
+      _.map(dependencies, (value, key) => `${typesPrefix}${key}`),
+      _.keys(devDependencies));
     return TypesChecker.checkNpm(modules);
   }
 
