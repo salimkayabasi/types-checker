@@ -103,7 +103,7 @@ export default class TypesChecker {
     logger.debug('interactive', result);
     if (_.isEmpty(packages)) {
       logger.info(chalk.red('You haven\'t selected any packages to install'));
-      return Promise.resolve();
+      return Promise.resolve(packages);
     }
     const opts = options;
     opts.useNpm = manager === 'npm';
@@ -111,14 +111,14 @@ export default class TypesChecker {
     if (opts.all) {
       return TypesChecker.update(opts, packages);
     }
-    return Promise.resolve();
+    return Promise.resolve(packageNames);
   }
 
   static async update(options, packageNames) {
     const { logger, cwd, useNpm, chalk } = options;
     const modules = packageNames.join(' ');
     if (_.isEmpty(modules)) {
-      return Promise.resolve();
+      return Promise.resolve(packageNames);
     }
     const cmd = `${useNpm ? 'npm install --save-dev' : 'yarn add --dev'} ${modules}`;
     logger.info('Running', `${chalk.cyanBright(cmd)}`);
@@ -130,7 +130,7 @@ export default class TypesChecker {
         if (err) {
           fail(err);
         } else {
-          done();
+          done(packageNames);
         }
       });
     });
