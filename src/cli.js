@@ -16,6 +16,7 @@ program
   .option('-p, --path [value]', 'Path for package.json file')
   .option('-i, --interactive', 'Interactive mode')
   .option('-N, --use-npm', 'Use NPM instead of Yarn')
+  .option('-D, --dev-dependencies', 'Search for devDependencies')
   .parse(process.argv);
 
 const options = {
@@ -26,6 +27,7 @@ const options = {
   interactive: program.interactive || false,
   useNpm: program.useNpm || false,
   cwd: program.path || process.cwd(),
+  devDependencies: program.devDependencies || false,
 };
 
 chalk.enabled = !options.noColor;

@@ -39,6 +39,9 @@ export default class TypesChecker {
     const dependencies = _.get(pkg, 'dependencies', {});
     dependencies.node = 'node';
     const devDependencies = _.get(pkg, 'devDependencies', {});
+    if (options.devDependencies) {
+      _.extend(dependencies, devDependencies);
+    }
     const tscheck = _.get(pkg, 'tscheck', {});
     logger.debug('dependencies', dependencies);
     logger.debug('devDependencies', devDependencies);
