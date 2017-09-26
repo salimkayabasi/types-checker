@@ -78,7 +78,7 @@ Options:
   -V, --version           output the version number
   -l, --logger            Debug output. See all logs
   -c, --no-color          Disable colored output
-  -a, --all               Add all possible type definitions
+  -a, --install           Install all possible type definitions
   -e, --error             Return the number of packages as exit code
   -p, --path [value]      Path for package.json file
   -i, --interactive       Interactive mode
