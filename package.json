@@ -35,10 +35,10 @@
     "async": "^2.5.0",
     "chalk": "^2.1.0",
     "commander": "^2.11.0",
-    "inquirer": "^3.2.2",
+    "inquirer": "^6.2.0",
     "lodash": "^4.17.4",
-    "log4js": "^2.3.3",
-    "ora": "^1.3.0"
+    "log4js": "^3.0.5",
+    "ora": "^3.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
