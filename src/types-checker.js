@@ -1,11 +1,11 @@
-import reduce from 'async/reduce';
-import { exec } from 'child_process';
-import fs from 'fs';
-import inquirer from 'inquirer';
-import _ from 'lodash';
-import ora from 'ora';
-import blacklist from './blacklist';
-import whitelist from './whitelist';
+const reduce =require( 'async/reduce');
+const { exec } =require( 'child_process');
+const fs =require( 'fs');
+const inquirer =require( 'inquirer');
+const _ =require( 'lodash');
+const ora =require( 'ora');
+const blacklist =require( './blacklist');
+const whitelist =require( './whitelist');
 
 const typesPrefix = '@types/';
 
@@ -42,11 +42,11 @@ export default class TypesChecker {
   static async afterChecking(options) {
     const modules = await TypesChecker.askForModules(options) || [];
     const install = await TypesChecker.askForInstalling(options, modules);
-    const useNpm = await TypesChecker.askForPackageManager(options, install);
+    const useYarn = await TypesChecker.askForPackageManager(options, install);
     return {
       ...options,
       modules,
-      useNpm,
+      useYarn,
       install,
     };
   }
@@ -118,7 +118,7 @@ export default class TypesChecker {
   }
 
   static async askForPackageManager(options, install) {
-    const defaultValue = options.useNpm ? 'npm' : 'yarn';
+    const defaultValue = options.useYarn ? 'yarn' : 'npm';
     const result = await inquirer.prompt(
       [
         {
@@ -127,7 +127,7 @@ export default class TypesChecker {
           type: 'list',
           choices: ['yarn', 'npm'],
           when() {
-            return install && options.interactive && !options.useNpm;
+            return install && options.interactive && !options.useYarn;
           },
           default() {
             return defaultValue;
@@ -225,11 +225,11 @@ export default class TypesChecker {
   }
 
   static async update(options) {
-    const { logger, cwd, useNpm, chalk, modules } = options;
+    const { logger, cwd, useYarn, chalk, modules } = options;
     if (_.isEmpty(modules)) {
       return Promise.resolve(modules);
     }
-    const cmd = `${useNpm ? 'npm install --save-dev' : 'yarn add --dev'} ${modules.join(' ')}`;
+    const cmd = `${useYarn ? 'yarn add --dev': 'npm install --save-dev'  } ${modules.join(' ')}`;
     logger.info('Running', `${chalk.cyanBright(cmd)}`);
     const spinner = ora('Installing dependencies').start();
     return new Promise((done, fail) => {

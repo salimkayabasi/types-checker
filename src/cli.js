@@ -1,8 +1,8 @@
-import chalk from 'chalk';
-import program from 'commander';
-import log4js from 'log4js';
-import pkg from '../package.json';
-import TypesChecker from './types-checker';
+const chalk =require( 'chalk');
+const program =require( 'commander');
+const log4js =require( 'log4js');
+const pkg=require('../package.json');
+const TypesChecker =require('./types-checker') ;
 
 const logger = log4js.getLogger('types-checker');
 
@@ -14,7 +14,7 @@ program
   .option('-e, --error', 'Return the number of packages as exit code')
   .option('-p, --path [value]', 'Path for package.json file')
   .option('-i, --interactive', 'Interactive mode')
-  .option('-N, --use-npm', 'Use NPM instead of Yarn')
+  .option('-Y, --use-yarn', 'Use Yarn instead of NPM')
   .option('-D, --dev-dependencies', 'Search for devDependencies')
   .parse(process.argv);
 
@@ -24,7 +24,7 @@ const options = {
   install: program.install || false,
   error: program.error || false,
   interactive: program.interactive || false,
-  useNpm: program.useNpm || false,
+  useYarn: program.useYarn || false,
   cwd: program.path || process.cwd(),
   devDependencies: program.devDependencies || false,
 };

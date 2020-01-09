@@ -10,3 +10,6 @@ trim_trailing_whitespace = true
 
 [Makefile, *.md]
 indent_style = tab
+
+[.yml]
+trim_trailing_whitespace = false
