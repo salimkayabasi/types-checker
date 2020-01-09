@@ -24,12 +24,12 @@
     "patch": "npm version patch -m \"New patch version %s\"",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "pretest": "yarn run lint",
+    "pretest": "npm run lint",
     "test": "jest --colors",
     "clean": "rm -rf dist/ build/ coverage/",
-    "prebuild": "yarn run lint && yarn run clean && yarn run test",
+    "prebuild": "npm run lint && npm run clean && npm run test",
     "build": "babel src/ -d dist/",
-    "prepublish": "yarn run build"
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "async": "^2.5.0",

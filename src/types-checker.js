@@ -181,7 +181,6 @@ export default class TypesChecker {
     }
 
     const exclude = [
-      _.keys(devDependencies),
       _.get(tscheck, 'exclude', []),
       blacklist,
     ];
